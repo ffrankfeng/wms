@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengf.wms.mapper.BaseDictDao">
+	<!-- 查询 -->
+	<select id="selectBaseDictListByCode" parameterType="String" resultType="BaseDict">
+		select * from base_dict where dict_type_code=#{value}
+	</select>
+
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengf.wms.mapper.UserDao">
+	<!-- 总条数
+	//客户名称
+	private String userName;
+	private String userPhone;
+	private String userAut;
+		
+	//当前页
+	private Integer page;
+		
+	//每页数
+	private Integer size=10;
+		
+	//开始行
+	private Integer startRow=0; -->
+	<!-- 
+		private int user_id;
+	private String user_name;
+	private String user_password;
+	private String user_phone;
+	private int user_aut;
+	private UserDict userDict;
+	 -->
+
+	<select id="userCountByQueryVo" parameterType="UserQueryVo" resultType="Integer">
+		select count(1) from user
+		<where>
+			<if test="userName!=null and userName!=''">
+				user_name like "%"#{userName}"%"
+			</if>
+			<if test="userPhone!=null and userPhone!=''">
+				and user_phone = #{userPhone}
+			</if>	
+			<if test="userAut!=null and userAut!=''">
+				and user_aut = #{userAut}
+			</if>	
+		</where>
+	</select>
+	<resultMap type="User" id="UserLists">
+		<result column="user_id" property="user_id"/>
+		<result column="user_name" property="user_name"/>
+		<result column="user_password" property="user_password"/>
+		<result column="user_phone" property="user_phone"/>
+		<result column="user_aut" property="user_aut"/>
+		<association property="userDict" javaType="UserDict">
+			<id column="user_aut" property="user_aut"/>
+			<result column="user_aut_dict" property="user_aut_dict"/>
+		</association>
+	</resultMap> 
+	<select id="selectUserListByQueryVo" parameterType="UserQueryVo" resultMap="UserLists">
+		select * from user  u 
+		left join user_dict ud 
+		on 
+		u.user_aut =ud.user_aut 
+		<where>
+			<if test="userName!=null and userName!=''">
+				 u.user_name like "%"#{userName}"%"
+			</if>
+			<if test="userPhone!=null and userPhone!=''">
+				and u.user_phone like "%"#{userPhone}"%"
+			</if>
+			<if test="userAut!=null and userAut!=''">
+				and u.user_aut = #{userAut}
+			</if>	
+		</where>
+		ORDER BY u.user_id  limit #{startRow},#{size}
+	</select>
+	
+	
+	<!-- public Product selectProductById(Integer id); -->
+	<select id="selectUserById" parameterType="Integer" resultMap="UserLists">
+		select * from user  u 
+		left join user_dict ud 
+		on 
+		u.user_aut =ud.user_aut 
+		<where>
+			u.user_id=#{value}
+		</where>
+	</select>
+ 
+	<!-- public void updateProductById(Product product); -->
+ 	<update id="updateUserById" parameterType="User">
+		update user
+		<set>
+			<if test="user_name!=null">
+			 	user_name = #{user_name},
+			</if>
+			<if test="!user_password.equals('')">
+			 	user_password = #{user_password},
+			</if>
+			<if test="user_phone!=null">
+			 	user_phone = #{user_phone},
+			</if>
+			<if test="user_aut!=null">
+			 	user_aut = #{user_aut},
+			</if>		
+		</set>
+		<where>
+			user_id=#{user_id}
+		</where>
+	</update>
+
+	<!-- public void deleteProductById(Integer id); -->
+	<delete id="deleteUserById" parameterType="Integer">
+		delete from user where user_id=#{id}
+	</delete>
+
+	<insert id="saveNewUser" parameterType="User">
+		insert into user value(null,
+			#{user_name},#{user_password},#{user_phone},#{user_aut})
+	</insert>	
+	
+	<select id="checkUsername" parameterType="String" resultType="Long">
+		select count(1) from user where user_name=#{value}
+	</select>
+</mapper>

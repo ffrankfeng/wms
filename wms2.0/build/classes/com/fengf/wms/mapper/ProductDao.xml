@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengf.wms.mapper.ProductDao">
+	<!-- 总条数
+		private String custName;
+	private String custSource;
+	private String custIndustry;
+	private String custLevel;
+	
+	//当前页
+	private Integer page;
+	
+	//每页数
+	private Integer size; -->
+	<select id="productCountByQueryVo" parameterType="ProductQueryVo" resultType="Integer">
+		select count(1) from product
+		<where>
+			<if test="productName!=null and productName!=''">
+				pro_name like "%"#{productName}"%"
+			</if>
+			<if test="productType!=null and productType!=''">
+				and pro_Type = #{productType}
+			</if>
+			<if test="productUptime!=null and productUptime!=''">
+				and pro_uptime like "%"#{productUptime}"%"
+			</if>	
+		</where>
+	</select>
+	<resultMap type="Product" id="ProductLists">
+		<result column="pro_id" property="pro_id"/>
+		<result column="pro_name" property="pro_name"/>
+		<result column="pro_type" property="pro_type"/>
+		<result column="pro_inf" property="pro_inf"/>
+		<result column="pro_money" property="pro_money"/>
+		<result column="pro_count" property="pro_count"/>
+		<result column="pro_uptime" property="pro_uptime"/>
+		<association property="productDict" javaType="ProductDict">
+			<id column="pro_dict_id" property="pro_dict_id"/>
+			<result column="pro_dict_code" property="pro_dict_code"/>
+		</association>
+	</resultMap> 
+	<select id="selectProductListByQueryVo" parameterType="ProductQueryVo" resultMap="ProductLists">
+		select * from product p
+		left join product_dict pd
+		on 
+		p.pro_type=pd.pro_dict_id
+		<where>
+			<if test="productName!=null and productName!=''">
+				p.pro_name like "%"#{productName}"%"
+			</if>
+			<if test="productType!=null and productType!=''">
+				and p.pro_Type = #{productType}
+			</if>
+			<if test="productUptime!=null and productUptime!=''">
+				and p.pro_uptime like "%"#{productUptime}"%"
+			</if>	
+		</where>
+		order by p.pro_id
+		limit #{startRow},#{size}
+	</select>
+		<select id="selectAllProductListByQueryVo" parameterType="ProductQueryVo" resultMap="ProductLists">
+		select * from product p
+		left join product_dict pd
+		on 
+		p.pro_type=pd.pro_dict_id
+		<where>
+			<if test="productName!=null and productName!=''">
+				p.pro_name like "%"#{productName}"%"
+			</if>
+			<if test="productType!=null and productType!=''">
+				and p.pro_Type = #{productType}
+			</if>
+			<if test="productUptime!=null and productUptime!=''">
+				and p.pro_uptime like "%"#{productUptime}"%"
+			</if>	
+		</where>
+		order by p.pro_id
+	</select>
+	<!-- public Product selectProductById(Integer id); -->
+	<select id="selectProductById" parameterType="Integer" resultMap="ProductLists">
+		select * from product p
+		left join product_dict pd
+		on 
+		p.pro_type=pd.pro_dict_id
+		<where>
+			p.pro_id=#{value}
+		</where>
+	</select>
+	
+	<!-- public void updateProductById(Product product); -->
+	<update id="updateProductById" parameterType="Product">
+		update product
+		<set>
+			<if test="pro_name!=null">
+			 	pro_name = #{pro_name},
+			</if>
+			<if test="pro_type!=null">
+			 	pro_type = #{pro_type},
+			</if>
+			<if test="pro_inf!=null">
+			 	pro_inf = #{pro_inf},
+			</if>
+			<if test="pro_money!=null">
+			 	pro_money = #{pro_money},
+			</if>
+			<if test="pro_count!=null">
+			 	pro_count = #{pro_count},
+			</if>
+			<if test="pro_uptime!=null">
+			 	pro_uptime = #{pro_uptime},
+			</if>
+		</set>
+		<where>
+			pro_id=#{pro_id}
+		</where>
+	</update>
+	<!-- public void deleteProductById(Integer id); -->
+	<delete id="deleteProductById" parameterType="Integer">
+		delete from product where pro_id=#{id}
+	</delete>
+	<update id="saveInputProduct" parameterType="ProductQueryVo">
+		update product
+		<set>
+			<if test="pro_input>0">
+				pro_count= (pro_count+#{pro_input}),pro_uptime = #{productUptime},
+			</if>
+		</set>
+		<where>
+			pro_id=#{pro_id}
+		</where>
+	</update>
+	<update id="saveOutputProduct" parameterType="ProductQueryVo">
+		update product
+		<set>
+			<if test="(pro_count-pro_output)>=0">
+				pro_count= (pro_count-#{pro_output}),pro_uptime = #{productUptime},
+			</if>
+		</set>
+		<where>
+			pro_id=#{pro_id}
+		</where>
+	</update>
+	<insert id="saveNewProduct" parameterType="Product">
+		insert into product value(null,
+			#{pro_name},#{pro_type},#{pro_inf},#{pro_money},#{pro_count},#{pro_uptime})
+	</insert>
+	<select id="check" parameterType="Product" resultType="Long">
+		select count(1) from product 
+		where pro_name =#{pro_name} and pro_Type = #{pro_type} and pro_money=#{pro_money} and pro_inf=#{pro_inf}
+	</select>
+</mapper>

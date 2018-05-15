@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengf.wms.mapper.UserDictDao">
+	<!-- 查询 -->
+	<!--private int user_aut;
+		private String user_aut_dict;
+		private Set<User> user_aut_code; 
+	-->
+	<select id="selectUserDictListByCode" resultType="UserDict">
+		select * from user_dict 
+	</select>
+</mapper>

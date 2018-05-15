@@ -1,0 +1,41 @@
+*{
+	margin:0px;
+	padding:0px;
+}
+body{
+	background-color:#583e7e;
+}
+.col-md-1{
+	width:400px;
+	height:300px;
+	border-style:solid;
+	border-color:white;
+	border-width:20px;
+	margin-top:10%;
+	margin-left:35%;
+	position:relative;
+	flex:center;
+	border-radius:10px;
+	background-color:rgba(255, 255, 255, 0.8);
+}
+.form-signin-heading{
+	font-size:20px;
+	text-align:center;
+	margin:30px;
+	flex:center;
+}
+.table{
+	text-align:center;
+	margin-top:16%;
+	margin-left:3%;
+	flex:center;
+}
+.checkbox{
+	text-align:center;
+}
+button{
+	margin-left:45%;
+}
+.form-control2{
+	margin-left:15px;
+}
